@@ -4,9 +4,11 @@ import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import { IconButton } from 'react-native-paper';
 import { useNavigationState } from '@react-navigation/native';
 import useStyles from './Styles'
+import { useMenuContext } from './MenuProvider';
 
-const CustomDrawerContent = (props: any) => {
+const Menu = (props: any) => {
   const styles = useStyles()
+  const { onSignOut } = useMenuContext()
   const navigationState = useNavigationState((state) => state); // Get the current navigation state
 
   const isActive = (routeName: string) => {
@@ -53,7 +55,7 @@ const CustomDrawerContent = (props: any) => {
       {/* Settings Drawer Item */}
       <DrawerItem
         label="Log Out"
-        onPress={() => props.navigation.navigate('Settings')}
+        onPress={onSignOut}
         icon={() => (
           <IconButton
             icon="logout"
@@ -66,4 +68,4 @@ const CustomDrawerContent = (props: any) => {
   );
 };
 
-export default CustomDrawerContent;
+export default Menu;

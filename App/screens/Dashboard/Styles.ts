@@ -50,6 +50,15 @@ const styles = CreateResponsiveStyle({
         left: '-2%',
         paddingHorizontal: '2%',
     },
+    actionsHeader: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        paddingRight: 30,
+    },
+    actionsCell: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+    },
 
     modalDialog: {
         width: '50%',

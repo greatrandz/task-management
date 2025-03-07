@@ -44,6 +44,12 @@ const styles = CreateResponsiveStyle({
     button: {
         marginTop: 20,
     },
+    footerContainer: {
+        marginTop: 10, 
+        paddingHorizontal: 5, 
+        justifyContent: 'space-between', 
+        flexDirection: 'row' 
+    },
     footerText: {
         textAlign: 'center',
         marginTop: 10,
