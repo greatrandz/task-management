@@ -1,7 +1,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { connect, ConnectedProps, useStore, } from 'react-redux'
 import {StackActions ,useNavigation, DrawerActions, useFocusEffect, CommonActions} from '@react-navigation/native'
-import { useAuthContext } from '@App/api'
+// import { useAuthContext } from '@App/api'
+import { useAuthService } from '@App/ducks/hooks'
 import Toast from 'react-native-toast-message'
 import { Platform } from 'react-native'
 const isWeb = Platform.OS === 'web'
@@ -24,23 +25,25 @@ const LoginContext = createContext<LoginContextValue>({
 
 const LoginProvider = ({ children }: LoginProviderProps) =>  {
     const navigation = useNavigation()
-    const { loadingMessage, signInWithEmail, signUpWithEmail } = useAuthContext()
+    const { error, onSignIn, onSignUp} = useAuthService()
+
+    React.useEffect(() => {
+        if (error) {
+            Toast.show({
+                type: 'error',  // Type of toast message
+                position: 'top',  // Position of toast on the screen
+                text1: 'Invalid email or password',  // Main text
+                text2: 'Please check your credentials and try again.',  // Subtext
+            });
+        }
+    }, [error])
 
     const onSignInWithEmail = (email: string, password: string) => {
-        signInWithEmail(email, password, (result: any) => {
-            if (result.error) {
-                Toast.show({
-                    type: 'error',  // Type of toast message
-                    position: 'top',  // Position of toast on the screen
-                    text1: 'Invalid email or password',  // Main text
-                    text2: 'Please check your credentials and try again.',  // Subtext
-                });
-            }
-        })
+        onSignIn({ email, password })
     }
 
     const onSignUpWithEmail = async (email: string, password: string) => {
-        signUpWithEmail(email, password, () => { })
+        onSignUp({ email, password })
     }
 
     const value = {

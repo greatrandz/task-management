@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { connect, ConnectedProps, useStore, } from 'react-redux'
 import {StackActions ,useNavigation, DrawerActions, useFocusEffect, CommonActions} from '@react-navigation/native'
-import { useAuthContext } from '@App/api'
+import { useAuthService } from '@App/ducks/hooks'
 import Menu from './Menu'
 import { Alert } from 'react-native'
 
@@ -21,11 +21,7 @@ const MenuContext = createContext<MenuContextValue>({
 
 const MenuProvider = ({ children }: MenuProviderProps) =>  {
     const navigation = useNavigation()
-    const { signOut } = useAuthContext()
-
-    const onSignOut = () => {
-        signOut()
-    }
+    const { onSignOut } = useAuthService()
 
     const value = {
         data: [],

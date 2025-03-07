@@ -4,9 +4,8 @@ import {StackActions ,useNavigation, DrawerActions, CommonActions, useFocusEffec
 import Toast from 'react-native-toast-message';
 import { Screen as MainScreen } from '../../navigation/routes/mainRoutes'
 import { Screen as RootScreen } from '../../navigation/routes/rootRoutes'
-import Dashboard from './Dashboard'
 import { Task } from '@App/models';
-import { useTaskContext } from '@App/api/TaskProvider';
+import useTaskService from '@App/ducks/hooks/useTaskService';
 
 interface DashboardProviderProps {
     children: React.ReactElement
@@ -14,60 +13,104 @@ interface DashboardProviderProps {
 
 interface DashboardContextValue {
     tasks: Task[]
+    completedTasks: Task [];
+    pendingTasks: Task [];
+    developmentTasks: Task [];
+    selectedTask: Task | null;
+    deleteModalVisible: boolean
     createModalVisible: boolean
-    onShowCreateModal: () => void
+    onShowCreateModal: (task: Task | null) => void
     onHideCreateModal: () => void
-    onCreateNewTask: (task: Task) => void
+    onShowDeleteModal: (task: Task) => void
+    onHideDeleteModal: () => void
+    onSaveTask: (task: Task | null) => void
+    onDeleteTaskItem: (task: Task | null) => void
 }
 
 const DashboardContext = createContext<DashboardContextValue>({
     tasks: [],
+    completedTasks: [],
+    pendingTasks: [],
+    developmentTasks: [],
+    selectedTask: null,
+    deleteModalVisible: false,
     createModalVisible: false,
     onShowCreateModal: () => {},
     onHideCreateModal: () => {},
-    onCreateNewTask: () => { },
+    onShowDeleteModal: () => {},
+    onHideDeleteModal: () => {},
+    onSaveTask: () => { },
+    onDeleteTaskItem: () => { },
 })
 
 const DashboardProvider = ({children}: DashboardProviderProps) =>  {
     const navigation = useNavigation()
-    const { tasks, createNewTask } = useTaskContext()
-
+    const { error, tasks, onCreateNewTask, onUpdateTask, onDeleteTask } = useTaskService()
+    const [selectedTask, setSelectedTask] = React.useState<Task | null>(null)
+    const [deleteModalVisible, setDeleteModalVisible] = React.useState(false);
     const [createModalVisible, setCreateModalVisible] = React.useState(false);
 
-    const onShowCreateModal = useCallback(() => setCreateModalVisible(true), [])
-
+    const onShowCreateModal = useCallback((task: Task | null) => {
+        setCreateModalVisible(true)
+        if (task) {
+            setSelectedTask(task)
+        }
+    }, [])
     const onHideCreateModal = useCallback(() => setCreateModalVisible(false), [])
+    
+    const onShowDeleteModal = useCallback((task: Task) => {
+        setSelectedTask(task)
+        setDeleteModalVisible(true)
+    }, [])
+    const onHideDeleteModal = useCallback(() => setDeleteModalVisible(false), [])
 
-    const onCreateNewTask = useCallback((task: Task) => {
-        if (task.name && task.description && task.status) {
-            createNewTask(task, (error: any) => {
+    useEffect(() => {
+        if (error) {
+            Toast.show({
+                type: 'error',  // Type of toast message
+                position: 'top',  // Position of toast on the screen
+                text1: 'Failure!',  // Main text
+                text2: 'Something went wrong. Please check your internet connection', 
+            });
+        }
+    }, [error])
+
+    const onSaveTask = useCallback((task: Task | null) => {
+        if (task) {
+            if (task.name && task.description && task.status) {
                 onHideCreateModal()
-                if (error) {
-                    Toast.show({
-                        type: 'error',  // Type of toast message
-                        position: 'top',  // Position of toast on the screen
-                        text1: 'Failure!',  // Main text
-                        text2: 'Something went wrong. Please check your internet connection', 
-                    });
+                if (task.id) {
+                    onUpdateTask(task)
                 }
                 else {
-                    Toast.show({
-                        type: 'success',  // Type of toast message
-                        position: 'top',  // Position of toast on the screen
-                        text1: 'Success!',  // Main text
-                        text2: 'Successfully Added!',  // Subtext
-                    });
+                    onCreateNewTask(task)
                 }
-            })
+                setSelectedTask(null)
+            }
+        }
+    }, [])
+
+    const onDeleteTaskItem = useCallback((task: Task | null) => {
+        if (task) {
+            onHideDeleteModal()
+            onDeleteTask(task)
         }
     }, [])
 
     const value = {
         tasks,
+        completedTasks: tasks?.filter(task => task?.status?.toLowerCase().includes("complete")) ?? [],
+        pendingTasks: tasks?.filter(task => task?.status?.toLowerCase().includes("pending")) ?? [],
+        developmentTasks: tasks?.filter(task => (!task?.status?.toLowerCase().includes("complete") && !task?.status?.toLowerCase().includes("pending"))) ?? [],
+        selectedTask,
+        deleteModalVisible,
         createModalVisible,
         onShowCreateModal,
         onHideCreateModal,
-        onCreateNewTask,
+        onShowDeleteModal,
+        onHideDeleteModal,
+        onSaveTask,
+        onDeleteTaskItem,
     }
 
     return (

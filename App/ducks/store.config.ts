@@ -9,9 +9,9 @@ import rootReducer from "./rootReducer";
 import rootSaga from "./sagas";
 
 const persistConfig = {
-  key: "signsecurev2",
+  key: "task-management",
   storage: AsyncStorage,
-  whitelist: ["auth", "dashboard"],
+  whitelist: ["auth", "task"],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const sagaMiddleware = createSagaMiddleware();

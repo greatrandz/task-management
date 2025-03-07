@@ -1,9 +1,4 @@
-export type Error = {
-    api?: string,
-    genericError?: string,
-    backendError?: string,
-    connectionError?: string,
-    connectionErrorMessage?: string,
-    statusCode?: Number,
-    signoutUser?: Boolean,
+export type APIError = {
+    message: string,
+    status: string,
 }

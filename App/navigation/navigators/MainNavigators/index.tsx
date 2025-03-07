@@ -27,16 +27,17 @@ const styles = StyleSheet.create({
 
 const Stack = createStackNavigator()
 const showHeader = false
-import { useAuthContext } from "@App/api/AuthProvider"
-
+import { useAuthContext } from "@App/api/provider/AuthProvider"
+import { useAuthService } from '@App/ducks/hooks';
 import LoginProvier from "@App/screens/Login/LoginProvider";
 import DashboardProvider from "@App/screens/Dashboard/DashboardProvider";
 import MenuProvider from '@App/screens/Menu/MenuProvider'
-import TaskProvider from "@App/api/TaskProvider";
+import TaskProvider from "@App/api/provider/TaskProvider";
 
 const MainNavigator = () => {
     const [loadedAssets, setLoadedAssets] = React.useState(false);
-    const { loading, loadingMessage, accessToken } = useAuthContext()
+    // const { accessToken } = useAuthContext()
+    const { accessToken, loading, loadingMessage } = useAuthService()
 
     const handleLoadAssets = async () => {
         try {

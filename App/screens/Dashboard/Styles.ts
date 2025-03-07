@@ -78,7 +78,10 @@ const styles = CreateResponsiveStyle({
         },
         gridCard: {
             width: '48%',
-        }
+        },
+        actionsCell: {
+            justifyContent: 'center',
+        },
     },
     [DEVICE_SIZES.XS]: {
         gridContainer: {
@@ -86,7 +89,10 @@ const styles = CreateResponsiveStyle({
         },
         gridCard: {
             width: '48%',
-        }
+        },
+        actionsCell: {
+            justifyContent: 'center',
+        },
     },
 }
 )

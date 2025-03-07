@@ -1,34 +1,25 @@
 import React from 'react';
-import { View, FlatList, Modal, TouchableOpacity, Pressable } from 'react-native';
+import { View, FlatList, Modal, TouchableOpacity, Pressable, Platform } from 'react-native';
 import { DataTable, IconButton, Dialog, Portal, Button, Text, TextInput, PaperProvider } from 'react-native-paper';
 import DashboardHeader from './DashboardHeader';
 import useStyles from './Styles'
 import { useDashboardContext } from './DashboardProvider';
 import { Task } from '@App/models'
+const right = Platform.OS === 'web' ? 0 : 15
 
 import { useDeviceSize, DEVICE_SIZES } from "rn-responsive-styles";
 
 const ITEMS_PER_PAGE = 10;
-
-// const tasks = [
-//     { id: '1', title: 'Complete React Native Tutorial', description: 'Finish the basic React Native course on Udemy', status: 'completed' },
-//     { id: '2', title: 'Finish Design for App', description: 'Create final designs for the new app interface', status: 'pending' },
-//     { id: '3', title: 'Update Project Documentation', description: 'Add more details to the README file and wiki', status: 'completed' },
-//     { id: '4', title: 'Bug Fixing', description: 'Fix login issue in the app', status: 'pending' },
-//     { id: '5', title: 'Write Unit Tests', description: 'Write unit tests for task management module', status: 'pending' },
-//     { id: '6', title: 'Write Unit Tests', description: 'Write unit tests for task management module', status: 'pending' },
-//     { id: '7', title: 'Bug Fixing', description: 'Fix login issue in the app', status: 'pending' },
-//     { id: '8', title: 'Finish Design for App', description: 'Create final designs for the new app interface', status: 'pending' },
-//     { id: '9', title: 'Complete React Native Tutorial', description: 'Finish the basic React Native course on Udemy', status: 'completed' },
-//     { id: '10', title: 'Update Project Documentation', description: 'Add more details to the README file and wiki', status: 'completed' },
-// ];
 
 const Dashboard = () => {
     const styles = useStyles()
     const device_size = useDeviceSize();
     const [page, setPage] = React.useState(0);
     const [pressedRowId, setPressedRowId] = React.useState<string | null>(null);
-    const { tasks, createModalVisible,  onCreateNewTask, onHideCreateModal } = useDashboardContext()
+    const { tasks, selectedTask, onSaveTask, onDeleteTaskItem,
+        createModalVisible, onShowCreateModal, onHideCreateModal,
+        deleteModalVisible, onShowDeleteModal, onHideDeleteModal, 
+    } = useDashboardContext()
     const [name, setName] = React.useState('');
     const [description, setDescription] = React.useState('');
     const [status, setStatus] = React.useState('');
@@ -42,12 +33,17 @@ const Dashboard = () => {
 
     // Clear Inputs
     React.useEffect(() => {
-        if (!createModalVisible) {
+        if (createModalVisible && selectedTask) {
+            setName(selectedTask.name)
+            setDescription(selectedTask.description)
+            setStatus(selectedTask.status)
+        }
+        else if (!createModalVisible) {
             setName("")
             setDescription("")
             setStatus("")
         }
-    }, [createModalVisible])
+    }, [selectedTask, createModalVisible])
 
     // Function to render each task in the list
     const renderTask = ({ item }: { item: Task }) => {
@@ -60,14 +56,16 @@ const Dashboard = () => {
                     <DataTable.Cell>{item.description}</DataTable.Cell>
                     <DataTable.Cell>{item.status}</DataTable.Cell>
                     <DataTable.Cell style={styles.actionsCell}>
-                        <TouchableOpacity onPress={() => { }}>
+                        <TouchableOpacity onPress={() => onShowCreateModal(item)}>
                             <IconButton
+                                style={{ right }}
                                 icon="pencil"
                                 size={20}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { }}>
+                        <TouchableOpacity onPress={() => onShowDeleteModal(item)}>
                             <IconButton
+                                style={{ right }}
                                 icon="delete"
                                 size={20}
                             />
@@ -108,9 +106,9 @@ const Dashboard = () => {
             />
 
             <PaperProvider>
-                <Modal animationType={'fade'} visible={createModalVisible} transparent >
+                <Modal animationType={'fade'} visible={createModalVisible || deleteModalVisible} transparent >
                     <Dialog  style={modalDialogStyle} visible={createModalVisible} onDismiss={onHideCreateModal}>
-                        <Dialog.Title>Create New Task</Dialog.Title>
+                        <Dialog.Title>{selectedTask ? `Update` : `Create New`} Task</Dialog.Title>
                         <Dialog.Content>
                             <TextInput
                                 label="Task Name"
@@ -133,9 +131,19 @@ const Dashboard = () => {
                         </Dialog.Content>
                         <Dialog.Actions>
                             <Button onPress={onHideCreateModal}>Cancel</Button>
-                            <Button onPress={() => onCreateNewTask({  name,  description, status, })}>
+                            <Button onPress={() => onSaveTask({ ...selectedTask,  name,  description, status, })}>
                                 Save
                             </Button>
+                        </Dialog.Actions>
+                    </Dialog>
+                    <Dialog style={modalDialogStyle} visible={deleteModalVisible} onDismiss={onHideDeleteModal}>
+                        <Dialog.Title>Delete Task</Dialog.Title>
+                        <Dialog.Content>
+                            <Text>Are you sure you want to delete this task? {selectedTask?.name ?? ""}</Text>
+                        </Dialog.Content>
+                        <Dialog.Actions>
+                            <Button onPress={onHideDeleteModal}>Cancel</Button>
+                            <Button onPress={() => onDeleteTaskItem(selectedTask)}>Delete</Button>
                         </Dialog.Actions>
                     </Dialog>
                 </Modal>

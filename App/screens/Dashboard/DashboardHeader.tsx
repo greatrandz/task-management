@@ -6,7 +6,7 @@ import { useDashboardContext } from './DashboardProvider';
 
 const DashboardHeader = () => {
     const styles = useStyles()
-    const { onShowCreateModal } = useDashboardContext()
+    const { tasks, completedTasks, pendingTasks, developmentTasks, onShowCreateModal } = useDashboardContext()
 
     return (
         <>
@@ -14,7 +14,7 @@ const DashboardHeader = () => {
                 <Card.Content>
                 <Title style={styles.cardTitle}>Task Overview</Title>
                 <Paragraph>Manage your tasks and track progress</Paragraph>
-                <Button mode="contained" onPress={onShowCreateModal} style={styles.button}>Create New Task</Button>
+                <Button mode="contained" onPress={() => onShowCreateModal(null)} style={styles.button}>Create New Task</Button>
                 </Card.Content>
             </Card>
 
@@ -27,7 +27,7 @@ const DashboardHeader = () => {
                         size={30}
                         />
                     <Title>Completed Tasks</Title>
-                    <Paragraph>15 Tasks</Paragraph>
+                    <Paragraph>{completedTasks.length} Tasks</Paragraph>
                 </Card>
 
                 <Card style={[styles.gridCard, styles.iconCardContent]}>
@@ -37,7 +37,17 @@ const DashboardHeader = () => {
                         size={30}
                         />
                     <Title>Pending Tasks</Title>
-                    <Paragraph>8 Tasks</Paragraph>
+                    <Paragraph>{pendingTasks.length} Tasks</Paragraph>
+                </Card>
+
+                <Card style={[styles.gridCard, styles.iconCardContent]}>
+                    <IconButton
+                        icon="calendar"
+                        //   color="#e91e63"
+                        size={30}
+                        />
+                    <Title>Development Tasks</Title>
+                    <Paragraph>{developmentTasks.length} Tasks</Paragraph>
                 </Card>
 
                 <Card style={[styles.gridCard, styles.iconCardContent]}>
@@ -47,17 +57,7 @@ const DashboardHeader = () => {
                         size={30}
                         />
                     <Title>Notifications</Title>
-                    <Paragraph>5 New Alerts</Paragraph>
-                </Card>
-
-                <Card style={[styles.gridCard, styles.iconCardContent]}>
-                    <IconButton
-                        icon="calendar"
-                        //   color="#e91e63"
-                        size={30}
-                        />
-                    <Title>Upcoming Tasks</Title>
-                    <Paragraph>3 Tasks</Paragraph>
+                    <Paragraph>0 New Alerts</Paragraph>
                 </Card>
             </View>
         </>

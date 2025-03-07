@@ -1,5 +1,6 @@
 import { getStateFromPath } from "@react-navigation/native";
 import * as Linking from "expo-linking";
+import { useAuthService } from "@App/ducks/hooks";
 
 const prefix = Linking.createURL("/");
 const config: any = {
@@ -20,7 +21,8 @@ const config: any = {
   },
 };
 const linking = () => {
-
+  const { onSignUpSuccess } = useAuthService()
+  
   return {
     prefixes: [prefix],
     config,
@@ -41,6 +43,19 @@ const linking = () => {
     // },
   
     getStateFromPath: (path: string) => {
+
+      if (path.includes("#")) {
+        const fragment = path.split('#')[1];
+
+        // Use URLSearchParams to parse the fragment string
+        const params = new URLSearchParams(fragment);
+  
+        // Access individual parameters
+        const accessToken = params.get('access_token');
+        if (accessToken) {
+          onSignUpSuccess({ access_token: accessToken } as any)
+        }
+      }
 
       return getStateFromPath(path, config);
     },

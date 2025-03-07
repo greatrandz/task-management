@@ -8,7 +8,7 @@ import Linking from './Linking'
 import LoginProvier from "@App/screens/Login/LoginProvider";
 import DashboardProvider from "@App/screens/Dashboard/DashboardProvider";
 import { PaperProvider } from 'react-native-paper'
-import AuthProvider from '@App/api/AuthProvider'
+import AuthProvider from '@App/api/provider/AuthProvider'
 import MenuProvider from '@App/screens/Menu/MenuProvider'
 const Stack = createStackNavigator()
 

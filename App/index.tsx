@@ -3,6 +3,8 @@ import RootNavigators from './navigation'
 import Toast from 'react-native-toast-message';
 import { View, Text } from 'react-native'
 import Apps from '../Apps';
+import store, { persistor } from "./ducks/store.config";
+import { Provider } from "react-redux";
 
 const toastConfig: any = {
   info: () => {},
@@ -17,10 +19,10 @@ const toastConfig: any = {
 
 export default function App() {
   return (
-    <>
+    <Provider store={store}>
         <RootNavigators />
         <Toast config={toastConfig} />
-    </>
+    </Provider>
   )
 }
 
