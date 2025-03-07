@@ -6,10 +6,11 @@ import {
     Dimensions,
     SafeAreaView,
     ScrollView,
+    TouchableOpacity,
 } from  'react-native'
 const { width, height } = Dimensions.get('window');
 import useStyles from './Styles'
-import LoginProvider from './LoginProvider';
+import LoginProvider, { useLoginContext } from './LoginProvider';
 
 import { TextInput, Button, Text, Card, Title, Provider as ThemeProvider, DefaultTheme } from 'react-native-paper'
 
@@ -29,14 +30,21 @@ const customTheme = {
 
 const Login = () =>{
     const styles = useStyles()
-
+    const [isSignIn, setIsSignIn] = React.useState(true)
+    const { onSignUpWithEmail, onSignInWithEmail } = useLoginContext()
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Implement login logic here
-        console.log('Logging in with:', username, password);
-    };
+    const handleLogin = React.useCallback(() => {
+        if (username && password) {
+            if (isSignIn) {
+                onSignInWithEmail(username, password)
+            } else {
+                onSignUpWithEmail(username, password)
+            }
+            setIsSignIn(true)
+        } 
+    }, [isSignIn, username, password])
 
     return(
         <LoginProvider>
@@ -69,10 +77,20 @@ const Login = () =>{
                                 />
 
                                 <Button mode="contained" onPress={handleLogin} style={styles.button}>
-                                    Log In
+                                    {isSignIn ? 'Log In' : 'Create Account'}
                                 </Button>
 
-                                <Text style={styles.footerText}>Forgot Password?</Text>
+                                <View style={styles.footerContainer}>
+                                    {isSignIn && 
+                                        <Text style={styles.footerText}>Forgot Password?</Text> 
+                                    }
+                                    <TouchableOpacity onPress={() => setIsSignIn(value => !value)}>
+                                        <Text style={styles.footerText}>
+                                            {isSignIn ? 'Sign Up' : 'Back'}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                
                                 </Card.Content>
                             </Card>
                         </View>

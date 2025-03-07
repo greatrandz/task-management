@@ -41,12 +41,6 @@ const linking = () => {
     // },
   
     getStateFromPath: (path: string) => {
-      if (path.includes("/MainNavigators/DrawerNavigator/Main/Contests/home")) {
-        alert("wow")
-        return {
-          routes: [{ name: "homes" }],
-        };
-      }
 
       return getStateFromPath(path, config);
     },

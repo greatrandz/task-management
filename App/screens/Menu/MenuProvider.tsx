@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { connect, ConnectedProps, useStore, } from 'react-redux'
 import {StackActions ,useNavigation, DrawerActions, useFocusEffect, CommonActions} from '@react-navigation/native'
-
+import { useAuthContext } from '@App/api'
 import Menu from './Menu'
 import { Alert } from 'react-native'
 
@@ -10,18 +10,26 @@ interface MenuProviderProps {
 }
 
 interface MenuContextValue {
-    data: any
+    data: any,
+    onSignOut: () => void
 }
 
 const MenuContext = createContext<MenuContextValue>({
-    data: []
+    data: [],
+    onSignOut: () => {}
 })
 
 const MenuProvider = ({ children }: MenuProviderProps) =>  {
     const navigation = useNavigation()
+    const { signOut } = useAuthContext()
+
+    const onSignOut = () => {
+        signOut()
+    }
 
     const value = {
-        data: []
+        data: [],
+        onSignOut,
     }
 
     return (
