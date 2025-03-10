@@ -1,6 +1,7 @@
 # task-management
 
 ## This application is available on the Web, Android, and iOS.
+![Alt text](https://raw.githubusercontent.com/greatrandz/task-management/refs/heads/main/assets/task-management-screenshot.png)
 
 ## Environment Setup
 
@@ -48,7 +49,7 @@
      - https://developer.apple.com/download/applications/
      - Set as active - example:
        ```bash
-       sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+       sudo xcode-select -s /Applications/Xcode_16.2.app/Contents/Developer
        ```
 
    - Android Studio 2024.1
