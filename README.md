@@ -3,6 +3,8 @@
 ## This application is available on the Web, Android, and iOS.
 ![Alt text](https://raw.githubusercontent.com/greatrandz/task-management/refs/heads/develop/assets/task-management-screenshot.png)
 
+The app supports user registration and login. I’ve implemented features for managing tasks, including creating, updating, and soft deleting tasks, as well as offline display functionality.
+
 ## Environment Setup
 
 1. Tested with the following:
