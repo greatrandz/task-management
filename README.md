@@ -1,7 +1,7 @@
 # task-management
 
 ## This application is available on the Web, Android, and iOS.
-![Alt text](https://raw.githubusercontent.com/greatrandz/task-management/refs/heads/main/assets/task-management-screenshot.png)
+![Alt text](https://raw.githubusercontent.com/greatrandz/task-management/refs/heads/develop/assets/task-management-screenshot.png)
 
 ## Environment Setup
 
